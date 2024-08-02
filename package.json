@@ -1,0 +1,17 @@
+{
+  "name": "student-_database-server",
+  "version": "1.0.0",
+  "description": "i create this app for storing student information and learn nodejs and mongoose",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "Zohaib",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.1",
+    "nodemon": "^3.1.4"
+  }
+}
