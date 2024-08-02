@@ -1,35 +1,36 @@
-const mongoose=require('mongoose');
-//define the mongodb connection url
-const mongooseURL='mongodb://localhost:27017/student-data';
+const mongoose = require('mongoose');
+require('dotenv').config();
 
-//setup mongo db connection
-mongoose.connect(mongooseURL,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
+// Ensure the DB_URL is defined
+const mongooseURL = process.env.DB_URL;
+
+if (!mongooseURL) {
+    throw new Error('DB_URL is not defined in the environment variables');
+}
+
+// Setup MongoDB connection
+mongoose.connect(mongooseURL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
 });
 
-//get the default connection
-//mongoose maintains a default connection OBJECT representing the mongo db connection
+// Get the default connection
+const db = mongoose.connection;
 
-const db=mongoose.connection;
-
-//listen events on mongodb server
-db.on('connected',()=>{
-    console.log("mongodb server is sucessfully connected");
-});
-db.on('disconnected',()=>{
-    console.log("mongodb server is sucessfully disconnected");
-});
-db.on('error',()=>{
-    console.log("Internal server error accours while connecting with mongodb server");
+// Listen to events on the MongoDB connection
+db.on('connected', () => {
+    console.log("MongoDB server is successfully connected");
 });
 
+db.on('disconnected', () => {
+    console.log("MongoDB server is successfully disconnected");
+});
 
-//default event listner for mongo data connection
+db.on('error', (error) => {
+    console.log("Internal server error occurred while connecting to MongoDB server:", error);
+});
 
-
-
-
-
-
-
+// Default event listener for MongoDB connection
+db.on('open', () => {
+    console.log("MongoDB connection is open");
+});
