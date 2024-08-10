@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Ensure the DB_URL is defined
-const mongooseURL = process.env.DB_URL;
+
+// const mongooseURL='mongodb://localhost:27017';
+
+const mongooseURL = process.env.DB_URL_LOCAL;
 
 if (!mongooseURL) {
     throw new Error('DB_URL is not defined in the environment variables');

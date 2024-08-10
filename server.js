@@ -1,26 +1,50 @@
-const express=require('express');
-const app=express();
+const express = require('express');
+const app = express();
+const passport=require('./auth')
+require('dotenv').config();
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const Student = require('./modules/student'); // Make sure the path is correct
+
+const port = process.env.PORT || 3000;
+
+// Middleware
+app.use(bodyParser.json()); // Parse JSON bodies
+
+// Middleware for logging requests
+const middleware = (req, res, next) => {
+    console.log(`[${new Date().toString()}] Request made to: ${req.originalUrl}`);
+    next();
+};
+
+// Initialize Passport
+app.use(passport.initialize());
+
+const localAutMiddleware=passport.authenticate('local',({session:false}));
 
 
-//body parser
-const bodyPerser=require('body-parser');
-app.use(bodyPerser.json());//store in req.body
-//importing db from db.js
-const db=require('./db');
-//importing studentSchema from mod
 
 
-app.get('/',(req,res)=>{
-    res.send("Welcome to student information portal..");
+// Database connection (make sure db.js is correct)
+const db = require('./db');
+
+// Middleware for logging requests
+app.use(middleware);
+
+// Route to authenticate and respond
+app.get('/', localAutMiddleware, (req, res) => {
+    res.send("Welcome to student information portal.");
 });
 
-//post method to post data in mongodb
-  const studentRoutes=require('./routes/studentRoutes');
-    app.use('/student',studentRoutes);
+// Student routes
+const studentRoutes = require('./routes/studentRoutes');
+app.use('/student',localAutMiddleware, studentRoutes);
 
-    const parentRoutes=require('./routes/parentsRoutes');
-    app.use('/parent',parentRoutes);
+// Parent routes
+const parentRoutes = require('./routes/parentsRoutes');
+app.use('/parent', parentRoutes);
 
-app.listen(3000,()=>{
-    console.log("Server is started at port 3000");
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is started at port ${port}`);
 });
